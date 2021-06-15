@@ -13,11 +13,12 @@ router.get('/', async (request, response) => {
 // Add Post
 router.post('/', async (request, response) => {
     const posts = await loadPostsCollection();
-    await posts.insertOne({
+    const insertResult = await posts.insertOne({
         text: request.body.text,
         createdAt: new Date(),
     });
-    response.status(201).send();
+    const post = insertResult.ops[0];
+    response.status(201).json(post);
 });
 
 //Delete Post
