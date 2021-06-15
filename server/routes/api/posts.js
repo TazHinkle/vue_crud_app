@@ -1,6 +1,7 @@
 const express = require('express');
 const MongoClient = require('mongodb').MongoClient;
 const router = express.Router();
+const mongodb = require('mongodb');
 
 //Get Posts
 router.get('/', async (request, response) => {
@@ -20,6 +21,11 @@ router.post('/', async (request, response) => {
 });
 
 //Delete Post
+router.delete('/:id', async (request, response) => {
+    const posts = await loadPostsCollection();
+    await posts.deleteOne({_id: new mongodb.ObjectID(request.params.id)});
+    response.status(200).send();
+});
 
 async function loadPostsCollection() {
     const client = await MongoClient.connect(
