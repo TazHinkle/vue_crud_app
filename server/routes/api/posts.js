@@ -2,6 +2,10 @@ const express = require('express');
 const MongoClient = require('mongodb').MongoClient;
 const router = express.Router();
 const mongodb = require('mongodb');
+const clientPromise = MongoClient.connect(
+    process.env.MONGODB_CONNECTION_STRING,
+    { useUnifiedTopology: true },
+);
 
 //Get Posts
 router.get('/', async (request, response) => {
@@ -29,12 +33,8 @@ router.delete('/:id', async (request, response) => {
 });
 
 async function loadPostsCollection() {
-    const client = await MongoClient.connect(
-        process.env.MONGODB_CONNECTION_STRING,
-        { useNewUrlParser: true, useUnifiedTopology: true },
-    );
-
-    return client.db('cluster0')
+    const client = await clientPromise;
+    return client.db('crud')
         .collection('posts');
 }
 
